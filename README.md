@@ -1,0 +1,55 @@
+# HH.ru CLI Tool
+
+CLI tool for fetching and caching data from hh.ru (HeadHunter API).
+
+## Features
+
+- Fetch vacancy data by URL with caching (default 7 days)
+- Fetch employer data by URL with caching (default 7 days)
+- Output formats: JSON or Markdown
+- Configurable cache duration per data type
+- Cross-platform cache storage
+
+## Installation
+
+```bash
+uv build --wheel --clear
+uv tool install dist/hh-*.whl
+```
+
+## Usage
+
+### Get Vacancy Data
+
+```bash
+# Get JSON output to stdout
+hh vacancy get https://perm.hh.ru/vacancy/127259437
+
+# Get Markdown output to file
+hh vacancy get --format=markdown --output=vacancies/127259437.md https://perm.hh.ru/vacancy/127259437
+```
+
+### Get Employer Data
+
+```bash
+# Get JSON output to stdout
+hh employer get https://spb.hh.ru/employer/1003123
+
+# Get Markdown output to file
+hh employer get --format=markdown --output=employers/1003123.md https://spb.hh.ru/employer/1003123
+```
+
+## Configuration
+
+Create a config file at `~/.config/hh-cli/config.json`:
+
+```json
+{
+  "cache_ttl": {
+    "vacancy": 604800,
+    "employer": 2592000
+  }
+}
+```
+
+This sets cache TTL to 7 days for vacancies and 30 days for employers.
