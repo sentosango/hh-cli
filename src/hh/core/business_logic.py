@@ -4,13 +4,13 @@ import hashlib
 from pathlib import Path
 from typing import Dict, Any, Optional
 import requests
-from platformdirs import user_cache_dir
+from platformdirs import user_cache_dir, user_config_dir
 
 
 class HHManager:
     """Core business logic for working with hh.ru API with caching support."""
 
-    def __init__(self, app_name: str = "hh-cli", app_author: str = None):
+    def __init__(self, app_name: str = "hh", app_author: str = None):
         self.base_url = "https://api.hh.ru"
         self.cache_dir = Path(user_cache_dir(app_name, app_author))
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -21,14 +21,22 @@ class HHManager:
             "employer": 7 * 24 * 60 * 60   # 7 days
         }
 
-        self.config_path = self.cache_dir / "config.json"
+        self.config_dir = Path(user_config_dir(app_name, app_author))
+        self.config_path = self.config_dir / "config.json"
         self.config = self._load_config()
 
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from platform-specific config directory."""
+        self.config_dir.mkdir(parents=True, exist_ok=True)
         if self.config_path.exists():
             return json.loads(self.config_path.read_text())
-        return {}
+
+        # Create default config with default cache TTL values
+        default_config = {
+            "cache_ttl": self.default_cache_ttl
+        }
+        self.config_path.write_text(json.dumps(default_config, ensure_ascii=False, indent=2))
+        return default_config
 
     def get_cache_ttl(self, data_type: str) -> int:
         """Get cache TTL for data type from config."""
