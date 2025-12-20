@@ -1,0 +1,55 @@
+import requests
+from typing import Dict, Any
+from hh.core.cache_manager import CacheManager
+from hh.core.config_manager import ConfigManager
+from hh.core.data_formatters import DataFormatters
+
+
+class HHManager:
+    """Core business logic for working with hh.ru API with caching support."""
+
+    def __init__(self, app_name: str = "hh", app_author: str = None):
+        self.base_url = "https://api.hh.ru"
+        self.cache_manager = CacheManager(app_name, app_author)
+        self.config_manager = ConfigManager(app_name, app_author)
+
+    def _fetch_data(self, url: str, data_type: str) -> Dict[str, Any]:
+        """Fetch data from API with caching."""
+        ttl = self.config_manager.get_cache_ttl(data_type)
+        cached_data = self.cache_manager._get_cached_data(url, data_type, ttl)
+        if cached_data:
+            return cached_data
+
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+        self.cache_manager._cache_data(url, data_type, data)
+        return data
+
+    def get_vacancy(self, vacancy_id: str) -> Dict[str, Any]:
+        """Get vacancy data from hh.ru API."""
+        url = f"{self.base_url}/vacancies/{vacancy_id}"
+        return self._fetch_data(url, "vacancy")
+
+    def get_employer(self, employer_id: str) -> Dict[str, Any]:
+        """Get employer data from hh.ru API."""
+        url = f"{self.base_url}/employers/{employer_id}"
+        return self._fetch_data(url, "employer")
+
+    # Public API methods for data formatting
+    def vacancy_to_json(self, data: Dict[str, Any]) -> str:
+        """Convert vacancy data to JSON."""
+        return DataFormatters.vacancy_to_json(data)
+
+    def employer_to_json(self, data: Dict[str, Any]) -> str:
+        """Convert employer data to JSON."""
+        return DataFormatters.employer_to_json(data)
+
+    def vacancy_to_markdown(self, data: Dict[str, Any]) -> str:
+        """Convert vacancy data to Markdown."""
+        return DataFormatters.vacancy_to_markdown(data)
+
+    def employer_to_markdown(self, data: Dict[str, Any]) -> str:
+        """Convert employer data to Markdown."""
+        return DataFormatters.employer_to_markdown(data)

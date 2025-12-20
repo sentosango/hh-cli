@@ -1,7 +1,7 @@
 import re
 import typer
 from pathlib import Path
-from hh.core.business_logic import HHManager
+from hh.core.api_client import HHManager
 
 app = typer.Typer(help="Commands for working with vacancies", no_args_is_help=True)
 manager = HHManager()
