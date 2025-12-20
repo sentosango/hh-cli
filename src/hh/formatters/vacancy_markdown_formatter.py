@@ -9,8 +9,7 @@ class VacancyMarkdownFormatter:
     def format_vacancy_to_markdown(data: Dict[str, Any]) -> str:
         """Convert vacancy data to Markdown with enhanced structure."""
         # Basic information
-        title = data.get("name", "Вакансия без названия")
-        vacancy_id = data.get("id", "")
+        name = data.get("name", "Вакансия без названия")
         employer = data.get("employer", {}).get("name", "Не указан")
         employer_url = data.get("employer", {}).get("alternate_url", "")
 
@@ -56,10 +55,11 @@ class VacancyMarkdownFormatter:
         archived = data.get("archived", False)
 
         # Build markdown with enhanced structure
-        md = f"""# {title}
+        md = f"""# Вакансия: {name}
 
 ## Основная информация
 
+**Название вакансии:** {name}
 **Профессиональная роль:** {professional_roles}
 **Зарплата:** {salary}
 

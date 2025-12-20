@@ -48,10 +48,11 @@ class EmployerMarkdownFormatter:
         open_vacancies = data.get("open_vacancies", 0)
 
         # Build markdown with enhanced structure
-        md = f"""# {name}
+        md = f"""# Работодатель: {name}
 
 ## Основная информация
 
+**Название работодателя:** {name}
 **Тип:** {employer_type}
 **Город:** {area_name}
 **Страна:** {country_code}
