@@ -32,7 +32,6 @@ class EmployerMarkdownFormatter:
         hh_url = data.get("alternate_url", "")
 
         # Additional status information
-        trusted = data.get("trusted", False)
         accredited_it = data.get("accredited_it_employer", False)
         has_divisions = data.get("has_divisions", False)
 
@@ -59,7 +58,6 @@ class EmployerMarkdownFormatter:
 **Количество открытых вакансий:** {open_vacancies}
 
 **Статусы:**
-- Работодатель доверенный: {"Да" if trusted else "Нет"}
 - Аккредитованный IT-работодатель: {"Да" if accredited_it else "Нет"}
 - Имеет подразделения: {"Да" if has_divisions else "Нет"}
 
@@ -74,7 +72,7 @@ class EmployerMarkdownFormatter:
 ## Ссылки
 
 **Веб-сайт:** {website}
-**Страница на HH.ru:** {hh_url}
+**Страница компании на HH.ru:** {hh_url}
 """
 
         return md

@@ -98,7 +98,7 @@ class VacancyMarkdownFormatter:
 
 **Дата публикации:** {published_date}
 **Дата создания:** {created_date}
-**Статус:** {'Архивирована' if archived else 'Активна'}
+**Статус:** {'Неактуальная вакансия (архив)' if archived else 'Актуальная вакансия'}
 
 
 ## Ссылки
