@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import Dict, Any
 from platformdirs import user_config_dir
 
+DEFAULT_CACHE_TTL = 7 * 24 * 60 * 60  # 7 days
+
 
 class ConfigManager:
     """Handles application configuration with platform-specific storage."""
@@ -21,8 +23,8 @@ class ConfigManager:
         # Create default config with default cache TTL values
         default_config = {
             "cache_ttl": {
-                "vacancy": 7 * 24 * 60 * 60,  # 7 days
-                "employer": 7 * 24 * 60 * 60,  # 7 days
+                "vacancy": DEFAULT_CACHE_TTL,
+                "employer": DEFAULT_CACHE_TTL,
             }
         }
         self.config_path.write_text(
@@ -32,4 +34,4 @@ class ConfigManager:
 
     def get_cache_ttl(self, data_type: str) -> int:
         """Get cache TTL for data type from config."""
-        return self.config.get("cache_ttl", {}).get(data_type, 7 * 24 * 60 * 60)
+        return self.config.get("cache_ttl", {}).get(data_type, DEFAULT_CACHE_TTL)
