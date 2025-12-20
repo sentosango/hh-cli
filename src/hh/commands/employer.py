@@ -1,10 +1,11 @@
 import re
 import typer
 from pathlib import Path
-from hh.core.api_client import HHManager
+from hh.core.api_client import ApiClient
+from hh.core.data_formatters import DataFormatters
 
 app = typer.Typer(help="Commands for working with employers", no_args_is_help=True)
-manager = HHManager()
+api = ApiClient()
 
 
 def extract_employer_id(url: str) -> str:
@@ -24,12 +25,12 @@ def get_employer(
     """Get employer data by URL with caching."""
     try:
         employer_id = extract_employer_id(url)
-        data = manager.get_employer(employer_id)
+        data = api.get_employer(employer_id)
 
         if format.lower() == "markdown":
-            content = manager.employer_to_markdown(data)
+            content = DataFormatters.employer_to_markdown(data)
         else:
-            content = manager.employer_to_json(data)
+            content = DataFormatters.employer_to_json(data)
 
         if output:
             output.parent.mkdir(parents=True, exist_ok=True)
