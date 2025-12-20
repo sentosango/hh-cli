@@ -1,9 +1,10 @@
 import re
 import typer
+import json
 from pathlib import Path
 
 from hh.core.api_client import ApiClient
-from hh.core.data_formatters import DataFormatters
+from hh.formatters.vacancy_markdown_formatter import VacancyMarkdownFormatter
 
 
 class VacancyCommands:
@@ -36,9 +37,9 @@ class VacancyCommands:
             data = self.api.get_vacancy(vacancy_id)
 
             if output_format.lower() == "markdown":
-                content = DataFormatters.vacancy_to_markdown(data)
+                content = VacancyMarkdownFormatter.format_vacancy_to_markdown(data)
             else:
-                content = DataFormatters.vacancy_to_json(data)
+                content = json.dumps(data, ensure_ascii=False, indent=2)
 
             if output:
                 output.parent.mkdir(parents=True, exist_ok=True)

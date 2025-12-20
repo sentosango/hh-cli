@@ -3,7 +3,8 @@ import typer
 from pathlib import Path
 
 from hh.core.api_client import ApiClient
-from hh.core.data_formatters import DataFormatters
+from hh.formatters.employer_markdown_formatter import EmployerMarkdownFormatter
+import json
 
 
 class EmployerCommands:
@@ -36,9 +37,9 @@ class EmployerCommands:
             data = self.api.get_employer(employer_id)
 
             if output_format.lower() == "markdown":
-                content = DataFormatters.employer_to_markdown(data)
+                content = EmployerMarkdownFormatter.format_employer_to_markdown(data)
             else:
-                content = DataFormatters.employer_to_json(data)
+                content = json.dumps(data, ensure_ascii=False, indent=2)
 
             if output:
                 output.parent.mkdir(parents=True, exist_ok=True)

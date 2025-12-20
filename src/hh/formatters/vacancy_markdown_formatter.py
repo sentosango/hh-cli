@@ -1,34 +1,12 @@
-import json
 from typing import Dict, Any, Optional
-from markdownify import markdownify
-from datetime import datetime
+from hh.formatters.common_markdown_formatter import CommonMarkdownFormatter
 
 
-class DataFormatters:
-    """Handles data formatting and conversion to different formats."""
-
-    # Маппинг типов работодателей из справочника HH.ru
-    EMPLOYER_TYPE_MAPPING = {
-        "company": "Прямой работодатель",
-        "agency": "Кадровое агентство",
-        "project_director": "Руководитель проекта",
-        "private_recruiter": "Частный рекрутер",
-        "private_individual": "Частное лицо",
-        "self_employed": "Самозанятый"
-    }
+class VacancyMarkdownFormatter:
+    """Handles vacancy data formatting to Markdown with enhanced structure."""
 
     @staticmethod
-    def vacancy_to_json(data: Dict[str, Any]) -> str:
-        """Convert vacancy data to JSON."""
-        return json.dumps(data, ensure_ascii=False, indent=2)
-
-    @staticmethod
-    def employer_to_json(data: Dict[str, Any]) -> str:
-        """Convert employer data to JSON."""
-        return json.dumps(data, ensure_ascii=False, indent=2)
-
-    @staticmethod
-    def vacancy_to_markdown(data: Dict[str, Any]) -> str:
+    def format_vacancy_to_markdown(data: Dict[str, Any]) -> str:
         """Convert vacancy data to Markdown with enhanced structure."""
         # Basic information
         title = data.get("name", "Вакансия без названия")
@@ -37,10 +15,10 @@ class DataFormatters:
         employer_url = data.get("employer", {}).get("alternate_url", "")
 
         # Format salary with currency symbols and gross handling
-        salary = DataFormatters._format_salary(data.get("salary"))
+        salary = VacancyMarkdownFormatter._format_salary(data.get("salary"))
 
         # Format address
-        address = DataFormatters._format_address(data.get("address"))
+        address = VacancyMarkdownFormatter._format_address(data.get("address"))
 
         # Format area (region)
         area = data.get("area", {})
@@ -52,24 +30,24 @@ class DataFormatters:
         schedule = data.get("schedule", {}).get("name", "Не указан")
 
         # Format professional roles
-        professional_roles = DataFormatters._format_professional_roles(data.get("professional_roles", []))
+        professional_roles = VacancyMarkdownFormatter._format_professional_roles(data.get("professional_roles", []))
 
         # Format description
         description = data.get("description", "")
         if description:
-            description = DataFormatters._html_to_markdown(description)
+            description = CommonMarkdownFormatter.html_to_markdown(description)
 
         # Format branded description
         branded_description = data.get("branded_description", "")
         if branded_description:
-            branded_description = DataFormatters._html_to_markdown(branded_description)
+            branded_description = CommonMarkdownFormatter.html_to_markdown(branded_description)
 
         # Format key skills
-        key_skills = DataFormatters._format_key_skills(data.get("key_skills", []))
+        key_skills = VacancyMarkdownFormatter._format_key_skills(data.get("key_skills", []))
 
         # Format dates
-        created_date = DataFormatters._format_date(data.get("created_at"))
-        published_date = DataFormatters._format_date(data.get("published_at"))
+        created_date = CommonMarkdownFormatter.format_date(data.get("created_at"))
+        published_date = CommonMarkdownFormatter.format_date(data.get("published_at"))
 
         # Get URLs and status
         url = data.get("alternate_url", "")
@@ -131,78 +109,7 @@ class DataFormatters:
 
         return md
 
-    @staticmethod
-    def employer_to_markdown(data: Dict[str, Any]) -> str:
-        """Convert employer data to Markdown with enhanced structure."""
-        # Basic information
-        name = data.get("name", "Работодатель без названия")
-        employer_type = DataFormatters._format_employer_type(data.get("type"))
-
-        # Format description
-        description = data.get("description", "")
-        if description:
-            description = DataFormatters._html_to_markdown(description)
-
-        # Get URLs
-        website = data.get("site_url", "")
-        hh_url = data.get("alternate_url", "")
-
-        # Additional status information
-        trusted = data.get("trusted", False)
-        accredited_it = data.get("accredited_it_employer", False)
-        has_divisions = data.get("has_divisions", False)
-
-        # Format area/country information
-        area = data.get("area", {})
-        area_name = area.get("name", "") if area else ""
-        country_code = data.get("country_code", "")
-
-        # Format industries
-        industries = data.get("industries", [])
-        industries_list = [f"- {industry.get('name', '')}" for industry in industries if industry.get('name')]
-
-        # Format open vacancies count
-        open_vacancies = data.get("open_vacancies", 0)
-
-        # Build markdown with enhanced structure
-        md = f"""# {name}
-
-## Основная информация
-
-**Тип:** {employer_type}
-**Город:** {area_name}
-**Страна:** {country_code}
-**Количество открытых вакансий:** {open_vacancies}
-
-**Статусы:**
-- Работодатель доверенный: {"Да" if trusted else "Нет"}
-- Аккредитованный IT-работодатель: {"Да" if accredited_it else "Нет"}
-- Имеет подразделения: {"Да" if has_divisions else "Нет"}
-
-## Отрасли деятельности
-
-{chr(10).join(industries_list) if industries_list else "Не указаны"}
-
-## Описание компании
-
-{description}
-
-## Ссылки
-
-**Веб-сайт:** {website}
-**Страница на HH.ru:** {hh_url}
-"""
-
-        return md
-
-    @staticmethod
-    def _html_to_markdown(html: str) -> str:
-        """Convert HTML to markdown with proper error handling."""
-        try:
-            return markdownify(html, strip=["a"])
-        except Exception:
-            return html
-
+    
     @staticmethod
     def _format_address(address: Optional[Dict[str, Any]]) -> str:
         """Format address from API response with proper handling."""
@@ -272,23 +179,7 @@ class DataFormatters:
 
         return ", ".join(skills) if skills else "Не указаны"
 
-    @staticmethod
-    def _format_date(date_str: Optional[str]) -> str:
-        """Format date from API response with error handling."""
-        if not date_str:
-            return "Не указана"
-        try:
-            return datetime.fromisoformat(date_str.replace("Z", "+00:00")).strftime("%Y-%m-%d")
-        except (ValueError, AttributeError):
-            return "Не указана"
-
-    @staticmethod
-    def _format_employer_type(employer_type: Optional[str]) -> str:
-        """Format employer type from API response."""
-        if not employer_type:
-            return "Не указан"
-        return DataFormatters.EMPLOYER_TYPE_MAPPING.get(employer_type, "Не указан")
-
+    
     @staticmethod
     def _format_professional_roles(professional_roles: list) -> str:
         """Format professional roles list."""
