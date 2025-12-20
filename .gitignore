@@ -43,3 +43,8 @@ Thumbs.db
 
 # Cache
 .cache/
+
+# Other
+/_references/
+/_todo/
+/_data/
