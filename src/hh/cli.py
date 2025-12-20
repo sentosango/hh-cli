@@ -15,9 +15,7 @@ vacancy_commands = VacancyCommands(api_client)
 employer_commands = EmployerCommands(api_client)
 
 # Create main app and add commands
-app = typer.Typer(
-    help="CLI tool for fetching data from hh.ru", no_args_is_help=True
-)
+app = typer.Typer(help="CLI tool for fetching data from hh.ru", no_args_is_help=True)
 
 app.command("vacancy")(vacancy_commands.get_vacancy)
 app.command("employer")(employer_commands.get_employer)

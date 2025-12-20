@@ -20,6 +20,8 @@ class CommonMarkdownFormatter:
         if not date_str:
             return "Не указана"
         try:
-            return datetime.fromisoformat(date_str.replace("Z", "+00:00")).strftime("%Y-%m-%d")
+            return datetime.fromisoformat(date_str.replace("Z", "+00:00")).strftime(
+                "%Y-%m-%d"
+            )
         except (ValueError, AttributeError):
             return "Не указана"

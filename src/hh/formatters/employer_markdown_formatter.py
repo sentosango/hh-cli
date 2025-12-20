@@ -12,7 +12,7 @@ class EmployerMarkdownFormatter:
         "project_director": "Руководитель проекта",
         "private_recruiter": "Частный рекрутер",
         "private_individual": "Частное лицо",
-        "self_employed": "Самозанятый"
+        "self_employed": "Самозанятый",
     }
 
     @staticmethod
@@ -20,7 +20,9 @@ class EmployerMarkdownFormatter:
         """Convert employer data to Markdown with enhanced structure."""
         # Basic information
         name = data.get("name", "Работодатель без названия")
-        employer_type = EmployerMarkdownFormatter._format_employer_type(data.get("type"))
+        employer_type = EmployerMarkdownFormatter._format_employer_type(
+            data.get("type")
+        )
 
         # Format description
         description = data.get("description", "")
@@ -42,7 +44,11 @@ class EmployerMarkdownFormatter:
 
         # Format industries
         industries = data.get("industries", [])
-        industries_list = [f"- {industry.get('name', '')}" for industry in industries if industry.get('name')]
+        industries_list = [
+            f"- {industry.get('name', '')}"
+            for industry in industries
+            if industry.get("name")
+        ]
 
         # Format open vacancies count
         open_vacancies = data.get("open_vacancies", 0)
@@ -78,10 +84,11 @@ class EmployerMarkdownFormatter:
 
         return md
 
-    
     @staticmethod
     def _format_employer_type(employer_type: Optional[str]) -> str:
         """Format employer type from API response."""
         if not employer_type:
             return "Не указан"
-        return EmployerMarkdownFormatter.EMPLOYER_TYPE_MAPPING.get(employer_type, "Не указан")
+        return EmployerMarkdownFormatter.EMPLOYER_TYPE_MAPPING.get(
+            employer_type, "Не указан"
+        )

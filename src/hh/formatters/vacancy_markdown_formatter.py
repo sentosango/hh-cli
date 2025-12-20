@@ -29,7 +29,9 @@ class VacancyMarkdownFormatter:
         schedule = data.get("schedule", {}).get("name", "Не указан")
 
         # Format professional roles
-        professional_roles = VacancyMarkdownFormatter._format_professional_roles(data.get("professional_roles", []))
+        professional_roles = VacancyMarkdownFormatter._format_professional_roles(
+            data.get("professional_roles", [])
+        )
 
         # Format description
         description = data.get("description", "")
@@ -39,10 +41,14 @@ class VacancyMarkdownFormatter:
         # Format branded description
         branded_description = data.get("branded_description", "")
         if branded_description:
-            branded_description = CommonMarkdownFormatter.html_to_markdown(branded_description)
+            branded_description = CommonMarkdownFormatter.html_to_markdown(
+                branded_description
+            )
 
         # Format key skills
-        key_skills = VacancyMarkdownFormatter._format_key_skills(data.get("key_skills", []))
+        key_skills = VacancyMarkdownFormatter._format_key_skills(
+            data.get("key_skills", [])
+        )
 
         # Format dates
         created_date = CommonMarkdownFormatter.format_date(data.get("created_at"))
@@ -98,18 +104,17 @@ class VacancyMarkdownFormatter:
 
 **Дата публикации:** {published_date}
 **Дата создания:** {created_date}
-**Статус:** {'Неактуальная вакансия (архив)' if archived else 'Актуальная вакансия'}
+**Статус:** {"Неактуальная вакансия (архив)" if archived else "Актуальная вакансия"}
 
 
 ## Ссылки
 
 **Страница вакансии на HH.ru:** {url}
-{'**Страница компании на HH.ru:** ' + employer_url if employer_url else ''}
+{"**Страница компании на HH.ru:** " + employer_url if employer_url else ""}
 """
 
         return md
 
-    
     @staticmethod
     def _format_address(address: Optional[Dict[str, Any]]) -> str:
         """Format address from API response with proper handling."""
@@ -137,12 +142,9 @@ class VacancyMarkdownFormatter:
             return "Не указана"
 
         currency = salary.get("currency", "")
-        currency_symbol = {
-            "RUR": "₽",
-            "USD": "$",
-            "EUR": "€",
-            "KZT": "₸"
-        }.get(currency, currency)
+        currency_symbol = {"RUR": "₽", "USD": "$", "EUR": "€", "KZT": "₸"}.get(
+            currency, currency
+        )
 
         from_amount = salary.get("from")
         to_amount = salary.get("to")
@@ -179,7 +181,6 @@ class VacancyMarkdownFormatter:
 
         return ", ".join(skills) if skills else "Не указаны"
 
-    
     @staticmethod
     def _format_professional_roles(professional_roles: list) -> str:
         """Format professional roles list."""
