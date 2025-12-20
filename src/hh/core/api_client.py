@@ -7,10 +7,10 @@ from hh.core.config_manager import ConfigManager
 class ApiClient:
     """API client for working with hh.ru API with caching support."""
 
-    def __init__(self, app_name: str = "hh", app_author: str = None):
+    def __init__(self, cache_manager: CacheManager, config_manager: ConfigManager):
         self.base_url = "https://api.hh.ru"
-        self.cache_manager = CacheManager(app_name, app_author)
-        self.config_manager = ConfigManager(app_name, app_author)
+        self.cache_manager = cache_manager
+        self.config_manager = config_manager
 
     def _fetch_data(self, url: str, data_type: str) -> Dict[str, Any]:
         """Fetch data from API with caching."""
