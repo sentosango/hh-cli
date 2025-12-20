@@ -25,7 +25,7 @@ class CacheManager:
         file_age = time.time() - cache_file.stat().st_mtime
         return file_age < ttl
 
-    def _get_cached_data(self, url: str, data_type: str, ttl: int) -> Optional[Dict[str, Any]]:
+    def get_cached_data(self, url: str, data_type: str, ttl: int) -> Optional[Dict[str, Any]]:
         """Get cached data if still valid."""
         cache_key = self._get_cache_key(url)
         cache_file = self.cache_dir / f"{data_type}_{cache_key}.json"
@@ -34,7 +34,7 @@ class CacheManager:
             return json.loads(cache_file.read_text())
         return None
 
-    def _cache_data(self, url: str, data_type: str, data: Dict[str, Any]) -> None:
+    def cache_data(self, url: str, data_type: str, data: Dict[str, Any]) -> None:
         """Cache data with timestamp."""
         cache_key = self._get_cache_key(url)
         cache_file = self.cache_dir / f"{data_type}_{cache_key}.json"

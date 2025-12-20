@@ -15,7 +15,7 @@ class ApiClient:
     def _fetch_data(self, url: str, data_type: str) -> Dict[str, Any]:
         """Fetch data from API with caching."""
         ttl = self.config_manager.get_cache_ttl(data_type)
-        cached_data = self.cache_manager._get_cached_data(url, data_type, ttl)
+        cached_data = self.cache_manager.get_cached_data(url, data_type, ttl)
         if cached_data:
             return cached_data
 
@@ -23,7 +23,7 @@ class ApiClient:
         response.raise_for_status()
         data = response.json()
 
-        self.cache_manager._cache_data(url, data_type, data)
+        self.cache_manager.cache_data(url, data_type, data)
         return data
 
     def get_vacancy(self, vacancy_id: str) -> Dict[str, Any]:
