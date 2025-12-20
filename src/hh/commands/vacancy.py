@@ -11,12 +11,15 @@ class VacancyCommands:
 
     def __init__(self, api_client: ApiClient):
         self.api = api_client
-        self.app = typer.Typer(help="Commands for working with vacancies", no_args_is_help=True)
+        self.app = typer.Typer(
+            help="Commands for working with vacancies", no_args_is_help=True
+        )
         self.app.command("get")(self.get_vacancy)
 
-    def extract_vacancy_id(self, url: str) -> str:
+    @staticmethod
+    def extract_vacancy_id(url: str) -> str:
         """Extract vacancy ID from hh.ru URL."""
-        match = re.search(r'/vacancy/(\d+)', url)
+        match = re.search(r"/vacancy/(\d+)", url)
         if not match:
             raise ValueError(f"Invalid vacancy URL: {url}")
         return match.group(1)
@@ -24,8 +27,12 @@ class VacancyCommands:
     def get_vacancy(
         self,
         url: str = typer.Argument(..., help="URL of the vacancy"),
-        output_format: str = typer.Option("json", "--format", "-f", help="Output format: json or markdown"),
-        output: Path = typer.Option(None, "--output", "-o", help="Output file path (stdout if not specified)")
+        output_format: str = typer.Option(
+            "json", "--format", "-f", help="Output format: json or markdown"
+        ),
+        output: Path = typer.Option(
+            None, "--output", "-o", help="Output file path (stdout if not specified)"
+        ),
     ) -> None:
         """Get vacancy data by URL with caching."""
         try:

@@ -22,10 +22,12 @@ class ConfigManager:
         default_config = {
             "cache_ttl": {
                 "vacancy": 7 * 24 * 60 * 60,  # 7 days
-                "employer": 7 * 24 * 60 * 60   # 7 days
+                "employer": 7 * 24 * 60 * 60,  # 7 days
             }
         }
-        self.config_path.write_text(json.dumps(default_config, ensure_ascii=False, indent=2))
+        self.config_path.write_text(
+            json.dumps(default_config, ensure_ascii=False, indent=2)
+        )
         return default_config
 
     def get_cache_ttl(self, data_type: str) -> int:

@@ -13,11 +13,13 @@ class CacheManager:
         self.cache_dir = Path(user_cache_dir(app_name, app_author))
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
-    def _get_cache_key(self, url: str) -> str:
+    @staticmethod
+    def _get_cache_key(url: str) -> str:
         """Generate cache key from URL."""
         return hashlib.md5(url.encode()).hexdigest()
 
-    def _is_cache_valid(self, cache_file: Path, ttl: int) -> bool:
+    @staticmethod
+    def _is_cache_valid(cache_file: Path, ttl: int) -> bool:
         """Check if cached file is still valid."""
         if not cache_file.exists():
             return False
@@ -25,7 +27,9 @@ class CacheManager:
         file_age = time.time() - cache_file.stat().st_mtime
         return file_age < ttl
 
-    def get_cached_data(self, url: str, data_type: str, ttl: int) -> Optional[Dict[str, Any]]:
+    def get_cached_data(
+        self, url: str, data_type: str, ttl: int
+    ) -> Optional[Dict[str, Any]]:
         """Get cached data if still valid."""
         cache_key = self._get_cache_key(url)
         cache_file = self.cache_dir / f"{data_type}_{cache_key}.json"
