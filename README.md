@@ -23,33 +23,33 @@ uv tool install dist/hh-*.whl
 
 ```bash
 # Get JSON output to stdout
-hh vacancy get https://perm.hh.ru/vacancy/127259437
+hh vacancy get https://perm.hh.ru/vacancy/12345678
 
 # Get Markdown output to file
-hh vacancy get --format=markdown --output=vacancies/127259437.md https://perm.hh.ru/vacancy/127259437
+hh vacancy get --format=markdown --output=vacancies/12345678.md https://perm.hh.ru/vacancy/12345678
 ```
 
 ### Get Employer Data
 
 ```bash
 # Get JSON output to stdout
-hh employer get https://spb.hh.ru/employer/1003123
+hh employer get https://spb.hh.ru/employer/123456
 
 # Get Markdown output to file
-hh employer get --format=markdown --output=employers/1003123.md https://spb.hh.ru/employer/1003123
+hh employer get --format=markdown --output=employers/123456.md https://spb.hh.ru/employer/123456
 ```
 
 ## Configuration
 
-Create a config file at `~/.config/hh-cli/config.json`:
+Create a config file at `~/.config/hh/config.json`:
 
 ```json
 {
   "cache_ttl": {
     "vacancy": 604800,
-    "employer": 2592000
+    "employer": 604800
   }
 }
 ```
 
-This sets cache TTL to 7 days for vacancies and 30 days for employers.
+This sets cache TTL to 7 days for vacancies and 7 days for employers.
