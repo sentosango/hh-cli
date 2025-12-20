@@ -11,10 +11,6 @@ class EmployerCommands:
 
     def __init__(self, api_client: ApiClient):
         self.api = api_client
-        self.app = typer.Typer(
-            help="Commands for working with employers", no_args_is_help=True
-        )
-        self.app.command("get")(self.get_employer)
 
     @staticmethod
     def extract_employer_id(url: str) -> str:

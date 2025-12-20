@@ -11,10 +11,6 @@ class VacancyCommands:
 
     def __init__(self, api_client: ApiClient):
         self.api = api_client
-        self.app = typer.Typer(
-            help="Commands for working with vacancies", no_args_is_help=True
-        )
-        self.app.command("get")(self.get_vacancy)
 
     @staticmethod
     def extract_vacancy_id(url: str) -> str:

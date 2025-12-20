@@ -23,20 +23,20 @@ uv tool install dist/hh-*.whl
 
 ```bash
 # Get JSON output to stdout
-hh vacancy get https://perm.hh.ru/vacancy/12345678
+hh vacancy https://perm.hh.ru/vacancy/12345678
 
 # Get Markdown output to file
-hh vacancy get --format=markdown --output=vacancies/12345678.md https://perm.hh.ru/vacancy/12345678
+hh vacancy --format=markdown --output=vacancies/12345678.md https://perm.hh.ru/vacancy/12345678
 ```
 
 ### Get Employer Data
 
 ```bash
 # Get JSON output to stdout
-hh employer get https://spb.hh.ru/employer/123456
+hh employer https://spb.hh.ru/employer/123456
 
 # Get Markdown output to file
-hh employer get --format=markdown --output=employers/123456.md https://spb.hh.ru/employer/123456
+hh employer --format=markdown --output=employers/123456.md https://spb.hh.ru/employer/123456
 ```
 
 ## Configuration
