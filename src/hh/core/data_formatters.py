@@ -32,7 +32,9 @@ class DataFormatters:
         """Convert vacancy data to Markdown with enhanced structure."""
         # Basic information
         title = data.get("name", "Вакансия без названия")
+        vacancy_id = data.get("id", "")
         employer = data.get("employer", {}).get("name", "Не указан")
+        employer_url = data.get("employer", {}).get("alternate_url", "")
 
         # Format salary with currency symbols and gross handling
         salary = DataFormatters._format_salary(data.get("salary"))
@@ -40,10 +42,17 @@ class DataFormatters:
         # Format address
         address = DataFormatters._format_address(data.get("address"))
 
+        # Format area (region)
+        area = data.get("area", {})
+        area_name = area.get("name", "") if area else ""
+
         # Format experience, employment, and schedule
         experience = data.get("experience", {}).get("name", "Не указан")
         employment = data.get("employment", {}).get("name", "Не указан")
         schedule = data.get("schedule", {}).get("name", "Не указан")
+
+        # Format professional roles
+        professional_roles = DataFormatters._format_professional_roles(data.get("professional_roles", []))
 
         # Format description
         description = data.get("description", "")
@@ -58,27 +67,42 @@ class DataFormatters:
         # Format key skills
         key_skills = DataFormatters._format_key_skills(data.get("key_skills", []))
 
-        # Format date
+        # Format dates
+        created_date = DataFormatters._format_date(data.get("created_at"))
         published_date = DataFormatters._format_date(data.get("published_at"))
 
-        # Get URL
+        # Get URLs and status
         url = data.get("alternate_url", "")
 
-        # Build markdown with proper structure
+        # State
+        archived = data.get("archived", False)
+
+        # Build markdown with enhanced structure
         md = f"""# {title}
 
 ## Основная информация
 
-**Компания:** {employer}
+**Профессиональная роль:** {professional_roles}
 **Зарплата:** {salary}
-**Адрес:** {address}
+
 **Опыт работы:** {experience}
 **Тип занятости:** {employment}
 **График работы:** {schedule}
 
+**Компания:** {employer}
+**Регион:** {area_name}
+**Адрес:** {address}
+
+
+## Ключевые навыки
+
+{key_skills}
+
+
 ## Описание вакансии
 
 {description}
+
 
 """
 
@@ -88,15 +112,21 @@ class DataFormatters:
 
 {branded_description}
 
+
 """
 
-        # Add key skills
-        md += f"""## Ключевые навыки
-
-{key_skills}
+        # Add vacancy state section
+        md += f"""## Состояние вакансии
 
 **Дата публикации:** {published_date}
-**URL:** {url}
+**Дата создания:** {created_date}
+**Статус:** {'Архивирована' if archived else 'Активна'}
+
+
+## Ссылки
+
+**Страница вакансии на HH.ru:** {url}
+{'**Страница компании на HH.ru:** ' + employer_url if employer_url else ''}
 """
 
         return md
@@ -258,3 +288,16 @@ class DataFormatters:
         if not employer_type:
             return "Не указан"
         return DataFormatters.EMPLOYER_TYPE_MAPPING.get(employer_type, "Не указан")
+
+    @staticmethod
+    def _format_professional_roles(professional_roles: list) -> str:
+        """Format professional roles list."""
+        if not professional_roles:
+            return "Не указано"
+
+        roles = []
+        for role in professional_roles:
+            if isinstance(role, dict) and "name" in role:
+                roles.append(role["name"])
+
+        return ", ".join(roles) if roles else "Не указано"
